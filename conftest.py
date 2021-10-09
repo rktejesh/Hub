@@ -1,4 +1,5 @@
 from hub.core.storage.provider import StorageProvider
+import gc
 import os
 import logging
 
@@ -18,6 +19,10 @@ from hub.tests.dataset_fixtures import *
 from hub.tests.storage_fixtures import *
 from hub.tests.cache_fixtures import *
 from hub.tests.client_fixtures import *
+
+@pytest.fixture(autouse=True)
+def ensure_gc():
+    gc.collect()
 
 
 def pytest_addoption(parser):

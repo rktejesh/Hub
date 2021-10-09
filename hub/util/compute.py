@@ -1,16 +1,11 @@
 from hub.util.exceptions import ModuleNotInstalledException, UnsupportedSchedulerError
+from hub.util.check_installation import ray_installed
 from hub.core.compute import (
     ThreadProvider,
     ProcessProvider,
     ComputeProvider,
     SerialProvider,
 )
-
-ray_installed = True
-try:
-    from hub.core.compute import RayProvider
-except ImportError:
-    ray_installed = False
 
 
 def get_compute_provider(
@@ -24,10 +19,12 @@ def get_compute_provider(
     elif scheduler == "processed":
         compute = ProcessProvider(num_workers)
     elif scheduler == "ray":
-        if not ray_installed:
+        if not ray_installed():
             raise ModuleNotInstalledException(
                 "'ray' should be installed to use ray scheduler."
             )
+        from hub.core.compute import RayProvider
+
         compute = RayProvider(num_workers)
 
     else:
